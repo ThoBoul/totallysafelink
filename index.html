@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>...</title>
+  <style>
+    body {
+      background: black;
+      color: #00ff00;
+      font-family: monospace;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body onclick="startAudio()">
+
+<div id="hint">tap</div>
+
+<script>
+const phrases = [
+  "I see you",
+  "Do not look behind you",
+  "It knows you are here",
+  "Stay still",
+  "You should not have opened this",
+  "It is getting closer",
+  "Do you hear that",
+  "It can see your screen",
+  "You are not alone",
+  "Turn around",
+
+  "It heard that",
+  "Why did you move",
+  "Too late",
+  "It is watching",
+  "It followed you here",
+  "You left something open",
+  "It remembers you",
+  "You were warned",
+  "It is inside now",
+  "Do not breathe",
+
+  "It is behind you now",
+  "It does not blink",
+  "You cannot hide",
+  "It is patient",
+  "It has been waiting",
+  "You made a mistake",
+  "It knows your name",
+  "It is closer than before",
+  "You should leave",
+  "It will not stop"
+];
+
+let voices = [];
+let started = false;
+
+speechSynthesis.onvoiceschanged = () => {
+  voices = speechSynthesis.getVoices();
+};
+
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  const creepyVoice =
+    voices.find(v => v.name.includes("English")) ||
+    voices[0];
+
+  if (creepyVoice) {
+    utterance.voice = creepyVoice;
+  }
+
+  utterance.volume = 2;
+  utterance.rate = 0.6;
+  utterance.pitch = 0.4;
+
+  speechSynthesis.speak(utterance);
+}
+
+function randomSpeak() {
+  const randomIndex = Math.floor(Math.random() * phrases.length);
+  speak(phrases[randomIndex]);
+
+  const nextDelay = Math.random() * 7000 + 4000;
+  setTimeout(randomSpeak, nextDelay);
+}
+
+function startAudio() {
+  if (started) return;
+  started = true;
+
+  document.getElementById("hint").style.display = "none";
+
+  speechSynthesis.resume();
+  randomSpeak();
+}
+</script>
+
+</body>
+</html>
